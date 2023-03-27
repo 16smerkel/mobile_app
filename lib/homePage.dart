@@ -1,3 +1,4 @@
+import 'dart:ffi';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   User? user = FirebaseAuth.instance.currentUser;
   late final _uid = user?.uid as String;
+  final _budgetController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +75,15 @@ class _HomePageState extends State<HomePage> {
                                               RegExp(r'^\d*\.?\d{0,2}'))
                                         ],
                                         autofocus: true,
+                                        controller: _budgetController,
                                         decoration: InputDecoration(
-                                          hintText: "New Amount",
-                                        ),
+                                            hintText: "New Amount",
+                                            suffixIcon: IconButton(
+                                              onPressed: () {
+                                                _budgetController.clear();
+                                              },
+                                              icon: const Icon(Icons.clear),
+                                            )),
                                       ),
                                       actions: [
                                         TextButton(
@@ -87,6 +95,22 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         TextButton(
                                             onPressed: () {
+                                              FirebaseFirestore.instance
+                                                  .collection('userInfo')
+                                                  .where('userID',
+                                                      isEqualTo: _uid)
+                                                  .get()
+                                                  .then((event) {
+                                                if (event.docs.isNotEmpty) {
+                                                  if (_budgetController.toString().isEmpty) {
+                                                    return;
+                                                  }
+
+                                                  var newBudget = double.parse(_budgetController.text.trim());
+                                                  var documentData = event.docs.single.reference;
+                                                  documentData.update({'budget': newBudget});
+                                                }
+                                              });
                                               Navigator.pop(context);
                                             },
                                             child: Text("SUBMIT",
@@ -181,5 +205,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
