@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _emailController,
                     decoration: InputDecoration(
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
-                      hintText: "Username",
+                      hintText: "Email",
                       suffixIcon: IconButton(
                         onPressed: () {
                           _emailController.clear();

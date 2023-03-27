@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                         alignment: Alignment.center,
                         margin: EdgeInsets.only(top: 30),
                         child: Text(
-                          "\$${totalAmount} / ${budget}\$",
+                          "\$${totalAmount.toDouble().toStringAsFixed(2)} / ${budget.toDouble().toStringAsFixed(2)}\$",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 24),
                         ),
