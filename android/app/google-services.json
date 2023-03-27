@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "924437295908",
+    "firebase_url": "https://cop4331-large-project-default-rtdb.firebaseio.com",
+    "project_id": "cop4331-large-project",
+    "storage_bucket": "cop4331-large-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924437295908:android:55af9488a5cbc4335db9b1",
+        "android_client_info": {
+          "package_name": "com.budgetit.budgetit_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924437295908-8g2i18ocvvjmqi67rlevpif4sso18b3u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGO1p_ISH_sAJIWZjCw78tuVyesZ6XQyU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924437295908-8g2i18ocvvjmqi67rlevpif4sso18b3u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
