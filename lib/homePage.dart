@@ -95,6 +95,8 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         TextButton(
                                             onPressed: () {
+                                              // Disgusting way of getting to the data,
+                                              // could be optimized
                                               FirebaseFirestore.instance
                                                   .collection('userInfo')
                                                   .where('userID',
@@ -109,6 +111,7 @@ class _HomePageState extends State<HomePage> {
                                                   var newBudget = double.parse(_budgetController.text.trim());
                                                   var documentData = event.docs.single.reference;
                                                   documentData.update({'budget': newBudget});
+                                                  _budgetController.clear();
                                                 }
                                               });
                                               Navigator.pop(context);
