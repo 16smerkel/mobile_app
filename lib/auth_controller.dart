@@ -34,9 +34,16 @@ class AuthController extends GetxController{
     }
   }
 
-  void register(String username, email, password) async{
+  // Add username if we want to add that to the database
+  void register(String email, password) async{
     try{
       //await userCredential.user?.updateDisplayName(username); // In case we want to add username
+      //Register new user to Firebase
+      var u = await auth.createUserWithEmailAndPassword(email: email, password: password);
+      String id = u.user!.uid.toString();
+      String userEmail = u.user!.email.toString();
+      addUserInfo(id, userEmail);
+
       Get.snackbar("About User", "User Message",
       backgroundColor: Colors.greenAccent,
       snackPosition: SnackPosition.TOP,
@@ -66,6 +73,20 @@ class AuthController extends GetxController{
         )
       );
     }
+  }
+
+  
+  void addUserInfo(String uid, email){
+    CollectionReference collectionReference = FirebaseFirestore.instance.collection("userInfo");
+
+    Map<String, dynamic> dataToSave ={
+      'budget': 0.00,
+      'userEmail': email,
+      'userID': uid,
+      'list': []
+    };
+    
+    collectionReference.add(dataToSave);
   }
   
 

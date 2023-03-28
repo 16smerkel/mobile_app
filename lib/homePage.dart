@@ -44,16 +44,21 @@ class _HomePageState extends State<HomePage> {
                 if (snapshot.hasData) {
                   var docs = snapshot.data.docs;
                   final info = docs[0].data()!;
-                  var budget = info['budget'];
+                  var budget = info['budget'].toDouble();
 
                   // Total list expense
                   // Need to be able to calculate this value from Firebase
                   var totalAmount = 99;
                   bool overload = totalAmount > budget;
 
-                  var percentage = totalAmount / (budget.toDouble());
+                  var percentage = totalAmount / budget;
                   String percentageString =
-                      (percentage * 100).toStringAsFixed(1);
+                      "${(percentage * 100).toStringAsFixed(2)}%";
+
+                  // Change percentage message
+                  if(budget > 10000.0){
+                    percentageString = "Ok Bill Gates";
+                  };
 
                   return (Column(
                     children: [
@@ -178,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                                 progressColor: Colors.blue[300],
                                 startAngle: 180,
                                 center: Text(
-                                  "$percentageString%",
+                                  percentageString,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 24,

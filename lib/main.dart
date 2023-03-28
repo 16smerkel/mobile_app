@@ -7,10 +7,9 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 
 Future main() async{
-  // Commit works
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Future.delayed(const Duration(seconds: 1));
+  await Future.delayed(const Duration(milliseconds: 500));
   FlutterNativeSplash.remove();
 
   await Firebase.initializeApp().then((value) => Get.put(AuthController()));
