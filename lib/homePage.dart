@@ -56,9 +56,9 @@ class _HomePageState extends State<HomePage> {
                       "${(percentage * 100).toStringAsFixed(2)}%";
 
                   // Change percentage message
-                  if(budget > 10000.0){
+                  if (budget > 10000.0) {
                     percentageString = "Ok Bill Gates";
-                  };
+                  }
 
                   return (Column(
                     children: [
@@ -109,13 +109,19 @@ class _HomePageState extends State<HomePage> {
                                                   .get()
                                                   .then((event) {
                                                 if (event.docs.isNotEmpty) {
-                                                  if (_budgetController.toString().isEmpty) {
+                                                  if (_budgetController
+                                                      .toString()
+                                                      .isEmpty) {
                                                     return;
                                                   }
 
-                                                  var newBudget = double.parse(_budgetController.text.trim());
-                                                  var documentData = event.docs.single.reference;
-                                                  documentData.update({'budget': newBudget});
+                                                  var newBudget = double.parse(
+                                                      _budgetController.text
+                                                          .trim());
+                                                  var documentData = event
+                                                      .docs.single.reference;
+                                                  documentData.update(
+                                                      {'budget': newBudget});
                                                   _budgetController.clear();
                                                 }
                                               });

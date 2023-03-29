@@ -8,6 +8,9 @@ class About extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
+    double h = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -23,7 +26,9 @@ class About extends StatelessWidget {
               "\"Home is where the heart is.\nLove. Live. Budget It!\"",
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: Colors.pink, fontSize: 26, fontStyle: FontStyle.italic),
+                  color: Colors.pink,
+                  fontSize: 26,
+                  fontStyle: FontStyle.italic),
             ),
           ),
           Container(
@@ -33,7 +38,9 @@ class About extends StatelessWidget {
               "Meet our team",
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: Colors.black, fontSize: 26, fontWeight: FontWeight.bold),
+                  color: Colors.black,
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold),
             ),
           ),
           Container(
@@ -48,7 +55,7 @@ class About extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(15))),
             child: Column(children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Corey
                   Container(
@@ -71,7 +78,7 @@ class About extends StatelessWidget {
                       ],
                     ),
                   ),
-      
+
                   // Isa
                   Container(
                     alignment: Alignment.topCenter,
@@ -93,7 +100,7 @@ class About extends StatelessWidget {
                       ],
                     ),
                   ),
-      
+
                   // Luigi
                   Container(
                     alignment: Alignment.topCenter,
@@ -118,7 +125,7 @@ class About extends StatelessWidget {
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Owen
                   Container(
@@ -141,7 +148,7 @@ class About extends StatelessWidget {
                       ],
                     ),
                   ),
-      
+
                   // Rebeca
                   Container(
                     alignment: Alignment.topCenter,
@@ -163,7 +170,7 @@ class About extends StatelessWidget {
                       ],
                     ),
                   ),
-      
+
                   // Sean
                   Container(
                     alignment: Alignment.topCenter,
@@ -189,15 +196,37 @@ class About extends StatelessWidget {
               ),
             ]),
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 30.0),
+            child: Divider(
+              color: Colors.black,
+            ),
+          ),
           Container(
             alignment: Alignment.topCenter,
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             child: Text(
-              """A project for COP4331 with Dr. Leinecker at the University of Central Florida. We chose this idea to challenge our software development skills. Nonetheless, this was supposed to be a fish app, but someone had to insist...""",
+              """A project for COP4331 with Dr. Leinecker at the University of Central Florida. We chose this idea to challenge our software development skills. Nonetheless, this was supposed to be a fish app, but a certain guy had to insist...""",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 22,
+              ),
+            ),
+          ),
+          Divider(
+            color: Colors.black,
+          ),
+          Container(
+            width: w,
+            height: h * 0.25,
+            margin: EdgeInsets.only(top: 10.0),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage(
+                  "img/main_logo.png",
+                ),
               ),
             ),
           ),
