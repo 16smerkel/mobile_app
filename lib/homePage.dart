@@ -1,5 +1,5 @@
 import 'dart:ffi';
-
+import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                       "${(percentage * 100).toStringAsFixed(2)}%";
 
                   // Change percentage message
-                  if (budget > 10000.0) {
+                  if (budget > 100000.0) {
                     percentageString = "Ok Bill Gates";
                   }
 
@@ -100,32 +100,35 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         TextButton(
                                             onPressed: () {
-                                              // Disgusting way of getting to the data,
-                                              // could be optimized
-                                              FirebaseFirestore.instance
-                                                  .collection('userInfo')
-                                                  .where('userID',
-                                                      isEqualTo: _uid)
-                                                  .get()
-                                                  .then((event) {
-                                                if (event.docs.isNotEmpty) {
-                                                  if (_budgetController
-                                                      .toString()
-                                                      .isEmpty) {
-                                                    return;
-                                                  }
+                                              // Updates user's budget
+                                              if (_budgetController
+                                                  .toString()
+                                                  .isEmpty) {
+                                                return;
+                                              }
 
-                                                  var newBudget = double.parse(
-                                                      _budgetController.text
-                                                          .trim());
-                                                  var documentData = event
-                                                      .docs.single.reference;
-                                                  documentData.update(
-                                                      {'budget': newBudget});
-                                                  _budgetController.clear();
-                                                }
-                                              });
+                                              var newBudget = double.parse(
+                                                  _budgetController.text
+                                                      .trim());
+
+                                              updateBudget(_uid, newBudget);
+                                              _budgetController.clear();
                                               Navigator.pop(context);
+
+                                              // User is too rich
+                                              if (newBudget > 100000.0) {
+                                                Get.snackbar("Budget Feedback",
+                                                    "Not even our team has that budget!",
+                                                    backgroundColor:
+                                                        Colors.orange,
+                                                    colorText: Colors.white,
+                                                    snackPosition:
+                                                        SnackPosition.TOP,
+                                                    icon: const Icon(
+                                                        Icons.add_alert),
+                                                    duration:
+                                                        Duration(seconds: 3));
+                                              }
                                             },
                                             child: Text("SUBMIT",
                                                 style: TextStyle(
@@ -217,5 +220,17 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  void updateBudget(String uid, double newBudget) async {
+    var collectionReference = await FirebaseFirestore.instance
+        .collection('userInfo')
+        .where('userID', isEqualTo: uid)
+        .get();
+
+    if (collectionReference.docs.isNotEmpty) {
+      var document = collectionReference.docs.single.reference;
+      document.update({'budget': newBudget});
+    }
   }
 }

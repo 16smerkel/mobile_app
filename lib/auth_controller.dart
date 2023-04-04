@@ -83,7 +83,8 @@ class AuthController extends GetxController{
       'budget': 0.00,
       'userEmail': email,
       'userID': uid,
-      'list': []
+      'list': [],
+      'hasReviewed': false
     };
     
     collectionReference.add(dataToSave);
@@ -96,6 +97,7 @@ class AuthController extends GetxController{
     }
     catch(e){
       Get.snackbar("About Login", "Login Message",
+      duration: Duration(seconds: 5),
       backgroundColor: Colors.redAccent,
       snackPosition: SnackPosition.TOP,
         titleText: Text(

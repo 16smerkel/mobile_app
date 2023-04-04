@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 
 
@@ -12,6 +14,8 @@ class SearchPage extends StatefulWidget {
 
 
 class _SearchPageState extends State<SearchPage> {
+  // Temporary url to see if it works
+  final searchApiUrl = Uri.parse("https://us-central1-cop4331c-large-project.cloudfunctions.net/search_product");
   String search = "";
 
   // ignore: prefer_final_fields
@@ -89,9 +93,15 @@ class _SearchPageState extends State<SearchPage> {
                           ListTile(
                             title: Text('${data['name']}'),
                             subtitle: Text('\$${data['price'].toDouble().toStringAsFixed(2)}'),
+                            // Temporary avatar until cna get data from stores, then display their logo
+                            leading: CircleAvatar(backgroundColor: Colors.amber),
                             trailing: IconButton(
                               icon: Icon(Icons.add, color: Colors.green),
-                              onPressed: (){},
+                              onPressed: () async {
+                                // Test to see if it returns correctly
+                                //var searchResult = await searchProduct('publix', '4167 Mensa Lane, Orlando, FL 32816', 10000);
+                                //print(searchResult);
+                              },
                               ),
                           ),
                           Divider(color: Colors.black, height: 0),
@@ -106,9 +116,15 @@ class _SearchPageState extends State<SearchPage> {
                           ListTile(
                             title: Text('${data['name']}'),
                             subtitle: Text('\$${data['price'].toDouble().toStringAsFixed(2)}'),
+                            // Temporary avatar until cna get data from stores, then display their logo
+                            leading: CircleAvatar(backgroundColor: Colors.amber),
                             trailing: IconButton(
                               icon: Icon(Icons.add, color: Colors.green),
-                              onPressed: (){},
+                              onPressed: () async {
+                                // Test to see if it returns correctly
+                                //var searchResult = await searchProduct('publix', '4167 Mensa Lane, Orlando, FL 32816', 10000);
+                                //print(searchResult);
+                              },
                               ),
                           ),
                           Divider(color: Colors.black, height: 0),
@@ -117,14 +133,19 @@ class _SearchPageState extends State<SearchPage> {
                     }
               
                     return Container();
-                    
                   }),
               );
             },),
           )
         ],
       ),
-
     );
+  }
+
+  // Currently not functional, ask Corey to check
+  // Function to search for a product
+  Future<Map<String, dynamic>> searchProduct(String search, String location, int time) async {
+    var searchResponse = await http.post(searchApiUrl, body: jsonEncode({'search': search, 'location': location, 'time': time}));
+    return json.decode(searchResponse.body);
   }
 }

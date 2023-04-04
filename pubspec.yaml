@@ -44,6 +44,7 @@ dependencies:
   cloud_firestore: ^4.4.5
   percent_indicator: ^4.2.3
   flutter_rating_bar: ^4.0.1
+  http: ^0.13.5
 
   
 dev_dependencies:
@@ -59,8 +60,6 @@ flutter_native_splash:
   icon_background_color: "#121212"
   android: true
   ios: true
-  fullscreen: true
-  fill: true
   web: false
   android_12: 
     image: img/sean_img.jpg 
