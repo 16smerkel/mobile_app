@@ -99,8 +99,8 @@ class _SearchPageState extends State<SearchPage> {
                               icon: Icon(Icons.add, color: Colors.green),
                               onPressed: () async {
                                 // Test to see if it returns correctly
-                                //var searchResult = await searchProduct('publix', '4167 Mensa Lane, Orlando, FL 32816', 10000);
-                                //print(searchResult);
+                                var searchResult = await searchProduct('publix', '4167 Mensa Lane, Orlando, FL 32816', 10000);
+                                print(searchResult);
                               },
                               ),
                           ),
@@ -122,8 +122,8 @@ class _SearchPageState extends State<SearchPage> {
                               icon: Icon(Icons.add, color: Colors.green),
                               onPressed: () async {
                                 // Test to see if it returns correctly
-                                //var searchResult = await searchProduct('publix', '4167 Mensa Lane, Orlando, FL 32816', 10000);
-                                //print(searchResult);
+                                var searchResult = await searchProduct('publix', '4167 Mensa Lane, Orlando, FL 32816', 10000);
+                                print(searchResult);
                               },
                               ),
                           ),
@@ -144,8 +144,8 @@ class _SearchPageState extends State<SearchPage> {
 
   // Currently not functional, ask Corey to check
   // Function to search for a product
-  Future<Map<String, dynamic>> searchProduct(String search, String location, int time) async {
-    var searchResponse = await http.post(searchApiUrl, body: jsonEncode({'search': search, 'location': location, 'time': time}));
-    return json.decode(searchResponse.body);
+  Future<List> searchProduct(String search, String location, int time) async {
+    var searchResponse = await http.post(searchApiUrl, headers: {"Content-type": "application/json"}, body: jsonEncode({'search': search, 'location': location, 'time': time}));
+    return json.decode(searchResponse.body) as List;
   }
 }
