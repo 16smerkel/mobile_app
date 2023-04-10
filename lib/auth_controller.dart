@@ -84,7 +84,8 @@ class AuthController extends GetxController{
       'userEmail': email,
       'userID': uid,
       'list': [],
-      'hasReviewed': false
+      'hasReviewed': false,
+      'timeScope': 3600
     };
     
     collectionReference.add(dataToSave);

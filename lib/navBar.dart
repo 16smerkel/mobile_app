@@ -17,65 +17,58 @@ class NavBar extends StatelessWidget {
         children: [
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: Colors.grey[700]),
-            accountName: Text("Logged as:", style: TextStyle(fontSize: 20)), 
+            accountName: Text("Logged as:", style: TextStyle(fontSize: 20)),
             accountEmail: Text(username, style: TextStyle(fontSize: 18)),
-            ),
-            ListTile(
-              leading: Icon(Icons.document_scanner),
-              title: Text("Scan receipt", style: TextStyle(fontSize: 18)),
-              onTap: null,
-            ),
-
-            Divider(color: Colors.grey),
-            ListTile(
-
+          ),
+          ListTile(
+            leading: Icon(Icons.document_scanner),
+            title: Text("Scan receipt", style: TextStyle(fontSize: 18)),
+            onTap: null,
+          ),
+          Divider(color: Colors.grey),
+          ListTile(
               leading: Icon(Icons.info),
               title: Text("About", style: TextStyle(fontSize: 18)),
               onTap: () {
                 FocusManager.instance.primaryFocus!.unfocus();
                 Navigator.pop(context);
-                Get.to(()=>About(), transition: Transition.rightToLeftWithFade);  
-              }
-            ),
-
-            ListTile(
+                Get.to(() => About(),
+                    transition: Transition.rightToLeftWithFade);
+              }),
+          ListTile(
               leading: Icon(Icons.rate_review),
               title: Text("Rate Us", style: TextStyle(fontSize: 18)),
               onTap: () {
                 FocusManager.instance.primaryFocus!.unfocus();
                 Navigator.pop(context);
-                Get.to(()=>Rate(), transition: Transition.rightToLeftWithFade);  
-              }
-            ),
-            
-            ListTile(
+                Get.to(() => Rate(),
+                    transition: Transition.rightToLeftWithFade);
+              }),
+          ListTile(
               leading: Icon(Icons.settings),
               title: Text("Settings", style: TextStyle(fontSize: 18)),
               onTap: () {
                 FocusManager.instance.primaryFocus!.unfocus();
                 Navigator.pop(context);
-                Get.to(()=>Settings(), transition: Transition.rightToLeftWithFade);  
-              }
-            ),
-
-            ListTile(
+                Get.to(() => Settings(),
+                    transition: Transition.rightToLeftWithFade);
+              }),
+          ListTile(
               leading: Icon(Icons.coronavirus_sharp),
-              title: Text("Cursed Mode (Soon)", style: TextStyle(fontSize: 18), ),
-              onTap: null
-            ),
-            
-            ListTile(
+              title: Text(
+                "Cursed Mode (Soon)",
+                style: TextStyle(fontSize: 18),
+              ),
+              onTap: null),
+          ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text("Log out", style: TextStyle(fontSize: 18)),
               onTap: () {
                 FocusManager.instance.primaryFocus!.unfocus();
                 AuthController.instance.logout();
-              }
-            ),
+              }),
         ],
       ),
-
-      
     );
   }
 }
