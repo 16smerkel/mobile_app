@@ -120,14 +120,14 @@ class _HomePageState extends State<HomePage> {
                                                 Get.snackbar("Budget Feedback",
                                                     "Not even our team has that budget!",
                                                     backgroundColor:
-                                                        Colors.orange,
-                                                    colorText: Colors.white,
+                                                        Colors.yellow.shade400,
+                                                    colorText: Colors.black,
                                                     snackPosition:
                                                         SnackPosition.TOP,
                                                     icon: const Icon(
                                                         Icons.add_alert),
                                                     duration:
-                                                        Duration(seconds: 3));
+                                                        Duration(seconds: 5));
                                               }
                                             },
                                             child: Text("SUBMIT",
@@ -204,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                         alignment: Alignment.center,
                         margin: EdgeInsets.only(top: 30),
                         child: Text(
-                          "\$${totalAmount.toDouble().toStringAsFixed(2)} / ${budget.toDouble().toStringAsFixed(2)}\$",
+                          "\$${totalAmount.toDouble().toStringAsFixed(2)} / \$${budget.toDouble().toStringAsFixed(2)}",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 24),
                         ),

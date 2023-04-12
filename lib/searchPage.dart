@@ -1,5 +1,6 @@
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,7 +21,6 @@ class _SearchPageState extends State<SearchPage> {
 
   User? user = FirebaseAuth.instance.currentUser;
   late final _uid = user?.uid as String;
-  
 
   Future<Map<String, dynamic>> searchProduct(
       String search, String location, int time) async {
@@ -34,7 +34,6 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    int time = getTimeScope(_uid) as int;
     return Scaffold(
       body: Column(
         children: [
@@ -65,104 +64,139 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
           Flexible(
-            child: FutureBuilder(
-              future: searchProduct(_searchController.text.trim(),
-                  '4167 Mensa Lane, Orlando, FL 32816', time),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else {
-                  return Container(
-                    alignment: Alignment.topCenter,
-                    margin: EdgeInsets.only(bottom: 15, left: 10, right: 15),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    child: ListView.builder(
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        var store = snapshot.data!.keys.elementAt(index);
-                        var products = snapshot.data![store];
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('userInfo')
+                      .where('userID', isEqualTo: _uid)
+                      .snapshots(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child:
+                            Text("Some error has occurred ${snapshot.error}"),
+                      );
+                    }
 
-                        return ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: products.length,
-                            itemBuilder: (context, index1) {
-                              var product = products[index1];
-                              var productName = product['name'].toString();
-                              var productPrice = product['price']
-                                  .toDouble()
-                                  .toStringAsFixed(2);
+                    if (snapshot.hasData) {
+                      var docs = snapshot.data.docs;
+                      final info = docs[0].data()!;
+                      var time = info['timeScope'];
 
-                              if (productName.toLowerCase().contains(
-                                  _searchController.text
-                                      .trim()
-                                      .toLowerCase())) {
-                                // Return the widget for the searched items
-                                return Column(
-                                  children: [
-                                    ListTile(
-                                      title: Text(productName),
-                                      subtitle: Text('\$$productPrice'),
-                                      // Temporary avatar until can get data from stores, then display their logo
-                                      leading: GestureDetector(
-                                        child: findLogo(store.toString()),
-                                        onTap: () {
-                                          FocusScope.of(context).unfocus();
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) => AlertDialog(
-                                                    title:
-                                                        Text("Store Location:"),
-                                                    content:
-                                                        Text(store.toString()),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                context),
-                                                        child: Text("Ok",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                        .green[
-                                                                    500])),
-                                                      ),
-                                                    ],
-                                                  ));
-                                        },
-                                      ),
+                      // Display list of items
+                      return FutureBuilder(
+                        future: searchProduct(_searchController.text.trim(),
+                            '4167 Mensa Lane, Orlando, FL 32816', time),
+                        builder: (context, snapshot1) {
+                          if (snapshot1.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            return Container(
+                              alignment: Alignment.topCenter,
+                              margin: EdgeInsets.only(
+                                  bottom: 15, left: 10, right: 15),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 1.0,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                              child: ListView.builder(
+                                keyboardDismissBehavior:
+                                    ScrollViewKeyboardDismissBehavior.onDrag,
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: snapshot1.data!.length,
+                                itemBuilder: (context, index) {
+                                  var store =
+                                      snapshot1.data!.keys.elementAt(index);
+                                  var products = snapshot1.data![store];
 
-                                      trailing: IconButton(
-                                        icon: Icon(Icons.add,
-                                            color: Colors.green),
-                                        onPressed: () async {},
-                                      ),
-                                    ),
-                                    Divider(color: Colors.black, height: 0),
-                                  ],
-                                );
-                              }
+                                  // Returns all items for each store
+                                  return ListView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: products.length,
+                                      itemBuilder: (context, index1) {
+                                        var product = products[index1];
+                                        var productName =
+                                            product['name'].toString();
+                                        var productPrice = product['price']
+                                            .toDouble()
+                                            .toStringAsFixed(2);
 
-                              return Container();
-                            });
-                      },
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
+                                        if (productName.toLowerCase().contains(
+                                            _searchController.text
+                                                .trim()
+                                                .toLowerCase())) {
+                                          // Return the widget for the searched items
+                                          return Column(
+                                            children: [
+                                              ListTile(
+                                                title: Text(productName),
+                                                subtitle:
+                                                    Text('\$$productPrice'),
+                                                leading: GestureDetector(
+                                                  child: findLogo(
+                                                      store.toString()),
+                                                  onTap: () {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                    showDialog(
+                                                        context: context,
+                                                        builder:
+                                                            (context) =>
+                                                                AlertDialog(
+                                                                  title: Text(
+                                                                      "Store Location:"),
+                                                                  content: Text(
+                                                                      store
+                                                                          .toString()),
+                                                                  actions: [
+                                                                    TextButton(
+                                                                      onPressed:
+                                                                          () =>
+                                                                              Navigator.pop(context),
+                                                                      child: Text(
+                                                                          "Ok",
+                                                                          style:
+                                                                              TextStyle(color: Colors.green[500])),
+                                                                    ),
+                                                                  ],
+                                                                ));
+                                                  },
+                                                ),
+                                                trailing: IconButton(
+                                                  icon: Icon(Icons.add,
+                                                      color: Colors.green),
+                                                  onPressed: () async {},
+                                                ),
+                                              ),
+                                              Divider(
+                                                  color: Colors.black,
+                                                  height: 0),
+                                            ],
+                                          );
+                                        }
+
+                                        // If no items match the search
+                                        return Container();
+                                      });
+                                },
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    }
+
+                    // Loading data
+                    return Center(child: CircularProgressIndicator());
+                  })),
         ],
       ),
     );
@@ -206,23 +240,4 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: Colors.white,
         child: ClipOval(child: Image.asset("img/unknownLogo.png")));
   }
-
-
-  Future<int> getTimeScope(String uid) async {
-    var collectionReference = await FirebaseFirestore.instance
-        .collection('userInfo')
-        .where('userID', isEqualTo: uid)
-        .get();
-
-    if (collectionReference.docs.isNotEmpty) {
-      var document = collectionReference.docs.single.data();
-      var timeScope = document['timeScope'];
-      return timeScope as int;
-    }
-    else{
-      return 10000;
-    }
-  }
-
-
 }
