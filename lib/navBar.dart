@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import './aboutPage.dart';
 import './settingsPage.dart';
 import './ratePage.dart';
+import './scanPage.dart';
 
 class NavBar extends StatelessWidget {
   String username;
@@ -23,7 +24,12 @@ class NavBar extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.document_scanner),
             title: Text("Scan receipt", style: TextStyle(fontSize: 18)),
-            onTap: null,
+            onTap: () {
+              FocusManager.instance.primaryFocus!.unfocus();
+              Navigator.pop(context);
+              Get.to(() => ScanPage(),
+                  transition: Transition.rightToLeftWithFade);
+            },
           ),
           Divider(color: Colors.grey),
           ListTile(
