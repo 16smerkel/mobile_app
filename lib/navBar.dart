@@ -59,7 +59,7 @@ class NavBar extends StatelessWidget {
               onTap: () {
                 FocusManager.instance.primaryFocus!.unfocus();
                 Navigator.pop(context);
-                Get.to(() => Settings(),
+                Get.to(() => SettingsPage(),
                     transition: Transition.rightToLeftWithFade);
               }),
           /*ListTile(
