@@ -34,182 +34,215 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            StreamBuilder<QuerySnapshot>(
-                stream: myStream,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text("Some error has occurred ${snapshot.error}"),
-                    );
-                  }
+      body: StreamBuilder<QuerySnapshot>(
+          stream: myStream,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("Some error has occurred ${snapshot.error}"),
+              );
+            }
 
-                  if (snapshot.hasData) {
-                    var docs = snapshot.data.docs;
-                    final info = docs[0].data()!;
-                    var shoppingList = info['list'];
-                    var listLength = shoppingList.length;
-                    var budget = info['budget'];
+            if (snapshot.hasData) {
+              var docs = snapshot.data.docs;
+              final info = docs[0].data()!;
+              var shoppingList = info['list'];
+              var listLength = shoppingList.length;
+              var budget = info['budget'];
 
-                    if (shoppingList.isEmpty) {
-                      return Center(
-                          child: Text(
-                        "No items were added to your shopping list",
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                      ));
-                    }
+              if (shoppingList.isEmpty) {
+                return Center(
+                  child: Text(
+                    "No items were added to your shopping list",
+                    style: TextStyle(color: Colors.black, fontSize: 20),
+                  ),
+                );
+              }
 
-                    //Total amount to be spent
-                    toBeSpent = 0;
-                    for (int i = 0; i < listLength; i++) {
-                      var item = jsonDecode(shoppingList[i]);
-                      toBeSpent += item['price'] * item['amount'];
-                    }
+              //Total amount to be spent
+              toBeSpent = 0;
+              for (int i = 0; i < listLength; i++) {
+                var item = jsonDecode(shoppingList[i]);
+                toBeSpent += item['price'] * item['amount'];
+              }
 
-                    // Remaining budget
-                    double remaining = 0;
-                    remaining = budget - toBeSpent;
+              // Remaining budget
+              double remaining = 0;
+              remaining = budget - toBeSpent;
 
-                    return Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding: EdgeInsets.all(15),
-                          margin: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.lightBlue[100]),
-                          child: Text(
-                            "Budget: \$${budget.toStringAsFixed(2)}",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                            ),
-                          ),
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.all(15),
+                      margin: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.lightBlue[100]),
+                      child: Text(
+                        "Budget: \$${budget.toStringAsFixed(2)}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
                         ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding: EdgeInsets.all(15),
-                          margin: EdgeInsets.symmetric(horizontal: 15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.purple[100]),
-                          child: Text(
-                            "Spent so far: \$${toBeSpent.toStringAsFixed(2)}",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                            ),
-                          ),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.all(15),
+                      margin: EdgeInsets.symmetric(horizontal: 15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.purple[100]),
+                      child: Text(
+                        "Spent so far: \$${toBeSpent.toStringAsFixed(2)}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
                         ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding: EdgeInsets.all(15),
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.green[100]),
-                          child: Text(
-                            "Remaining: \$${remaining.toStringAsFixed(2)}",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                            ),
-                          ),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.all(15),
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.green[100]),
+                      child: Text(
+                        "Remaining: \$${remaining.toStringAsFixed(2)}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
                         ),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          padding: EdgeInsets.only(
-                              top: 5, bottom: 10, left: 15, right: 15),
-                          child: Text(
-                            "Shopping List:",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      padding: EdgeInsets.only(
+                          top: 5, bottom: 10, left: 15, right: 15),
+                      child: Text(
+                        "Shopping List:",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.topCenter,
+                      margin: EdgeInsets.only(bottom: 15, left: 10, right: 15),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
                           ),
-                        ),
-                        Container(
-                          alignment: Alignment.topCenter,
-                          margin:
-                              EdgeInsets.only(bottom: 15, left: 10, right: 15),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 1.0,
-                              ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5))),
-                          child: ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: listLength,
-                              itemBuilder: (context, index) {
-                                var item = jsonDecode(shoppingList[index]);
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      child: ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: listLength,
+                          itemBuilder: (context, index) {
+                            var item = jsonDecode(shoppingList[index]);
 
-                                return Column(
-                                  children: [
-                                    ListTile(
-                                      title: Text(item['name']),
-                                      subtitle: Text(
-                                          "Qty: ${item['amount'].toStringAsFixed(0)} x \$${item['price'].toStringAsFixed(2)}"),
-                                      leading: GestureDetector(
-                                        child: findLogo(
-                                            item['location'].toString()),
-                                        onTap: () {
-                                          FocusScope.of(context).unfocus();
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) => AlertDialog(
-                                                    title:
-                                                        Text("Store Location:"),
-                                                    content: Text(
-                                                        item['location']
-                                                            .toString()),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                context),
-                                                        child: Text("Ok",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                        .green[
-                                                                    500])),
-                                                      ),
-                                                    ],
-                                                  ));
-                                        },
-                                      ),
-                                      trailing: IconButton(
-                                        icon: Icon(Icons.remove_circle,
-                                            color: Colors.red),
-                                        onPressed: () async {
-                                          var json = shoppingList[index];
-                                          removeFromList(_uid, json);
-                                        },
-                                      ),
+                            return Column(
+                              children: [
+                                ListTile(
+                                  title: Text(item['name']),
+                                  subtitle: Text(
+                                      "Qty: ${item['amount'].toStringAsFixed(0)} x \$${item['price'].toStringAsFixed(2)}"),
+                                  leading: GestureDetector(
+                                    child:
+                                        findLogo(item['location'].toString()),
+                                    onTap: () {
+                                      FocusScope.of(context).unfocus();
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                                title: Text("Store Location:"),
+                                                content: Text(item['location']
+                                                    .toString()),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    child: Text("Ok",
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .green[500])),
+                                                  ),
+                                                ],
+                                              ));
+                                    },
+                                  ),
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.remove_circle,
+                                        color: Colors.red),
+                                    onPressed: () async {
+                                      var json = shoppingList[index];
+                                      removeFromList(_uid, json);
+                                    },
+                                  ),
+                                ),
+                                Divider(color: Colors.black, height: 0),
+                              ],
+                            );
+                          }),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text(
+                                      "Do you want to clear shopping list?"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text("Cancel",
+                                          style: TextStyle(
+                                              color: Colors.red[500])),
                                     ),
-                                    Divider(color: Colors.black, height: 0),
+                                    TextButton(
+                                        onPressed: () {
+                                          clearList(_uid);
+                                        },
+                                        child: Text("Proceed",
+                                            style: TextStyle(
+                                                color: Colors.green[500])))
                                   ],
-                                );
-                              }),
+                                ));
+                      },
+                      child: Container(
+                        width: 150,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.red[600]),
+                        child: Center(
+                          child: Text(
+                            "Clear list",
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ],
-                    );
-                  }
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
 
-                  // Loading data
-                  return Center(child: CircularProgressIndicator());
-                }),
-          ],
-        ),
-      ),
+            // Loading data
+            return Center(child: CircularProgressIndicator());
+          }),
     );
   }
 
@@ -263,6 +296,18 @@ class _ListPageState extends State<ListPage> {
       document.update({
         'list': FieldValue.arrayRemove([json])
       });
+    }
+  }
+
+  void clearList(String uid) async {
+    var collectionReference = await FirebaseFirestore.instance
+        .collection('userInfo')
+        .where('userID', isEqualTo: uid)
+        .get();
+
+    if (collectionReference.docs.isNotEmpty) {
+      var document = collectionReference.docs.single.reference;
+      document.update({'list': []});
     }
   }
 }
