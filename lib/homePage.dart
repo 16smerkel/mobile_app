@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
 
                   for (int i = 0; i < listLength; i++) {
                     var item = jsonDecode(shoppingList[i]);
-                    toBeSpent += item['price'];
+                    toBeSpent += item['price'] * item['amount'];
                   }
 
                   // Total list expense
