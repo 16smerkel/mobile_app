@@ -17,7 +17,10 @@ class NavBar extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: Colors.grey[700]),
+            decoration: BoxDecoration(
+              color: Colors.grey[900],
+              image: DecorationImage(image: AssetImage("img/mascotLogo.png")),
+            ),
             accountName: Text("Logged as:", style: TextStyle(fontSize: 20)),
             accountEmail: Text(username, style: TextStyle(fontSize: 18)),
           ),

@@ -46,24 +46,30 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   http: ^0.13.5
   non_linear_slider: ^0.0.1
-
+  flutter_launcher_icons: ^0.13.0
+  
   
 dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_native_splash: ^2.2.19
   flutter_test:
     sdk: flutter
-
-
+  
 flutter_native_splash:
-  image: img/sean_img.jpg
+  image: img/mascotLogo.png
   color: "#121212"
   icon_background_color: "#121212"
   android: true
   ios: true
   web: false
   android_12: 
-    image: img/sean_img.jpg 
+    image: img/mascotLogo.png 
+
+flutter_icons: 
+  android: true
+  ios: true
+  image_path: "img/mainLogo.png"
+  adaptive_icon_background: "#121212"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -224,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                 }
 
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: Center(child: CircularProgressIndicator()),
                 );
               }),
         ],
