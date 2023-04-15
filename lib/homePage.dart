@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -46,9 +47,18 @@ class _HomePageState extends State<HomePage> {
                   final info = docs[0].data()!;
                   var budget = info['budget'].toDouble();
 
+                  double toBeSpent = 0;
+                  var shoppingList = info['list'];
+                  var listLength = shoppingList.length;
+
+                  for (int i = 0; i < listLength; i++) {
+                    var item = jsonDecode(shoppingList[i]);
+                    toBeSpent += item['price'];
+                  }
+
                   // Total list expense
                   // Need to be able to calculate this value from Firebase
-                  var totalAmount = 99;
+                  var totalAmount = toBeSpent;
                   bool overload = totalAmount > budget;
 
                   var percentage = totalAmount / budget;

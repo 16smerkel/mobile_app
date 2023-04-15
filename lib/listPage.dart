@@ -177,4 +177,18 @@ class _ListPageState extends State<ListPage> {
         backgroundColor: Colors.white,
         child: ClipOval(child: Image.asset("img/unknownLogo.png")));
   }
+
+  void removeFromList(String uid, String json) async {
+    var collectionReference = await FirebaseFirestore.instance
+        .collection('userInfo')
+        .where('userID', isEqualTo: uid)
+        .get();
+
+    if (collectionReference.docs.isNotEmpty) {
+      var document = collectionReference.docs.single.reference;
+      document.update({
+        'list': FieldValue.arrayRemove([json])
+      });
+    }
+  }
 }

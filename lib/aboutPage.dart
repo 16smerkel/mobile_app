@@ -33,7 +33,7 @@ class About extends StatelessWidget {
           ),
           Container(
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.only(top: 15, bottom: 5, left: 15, right: 15),
             child: Text(
               "Meet our team",
               textAlign: TextAlign.center,
@@ -95,7 +95,7 @@ class About extends StatelessWidget {
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "Website\n",
+                          "Front-end\n",
                         )
                       ],
                     ),
@@ -187,7 +187,7 @@ class About extends StatelessWidget {
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "That guy\n",
+                          "Front-end\n",
                         )
                       ],
                     ),
@@ -196,26 +196,37 @@ class About extends StatelessWidget {
               ),
             ]),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 30.0),
-            child: Divider(
-              color: Colors.black,
+          Container(
+            alignment: Alignment.topCenter,
+            padding: EdgeInsets.only(top: 25, bottom: 5, left: 15, right: 15),
+            child: Text(
+              "Purpose",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold),
             ),
           ),
           Container(
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: Colors.black,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(15))),
             child: Text(
-              """A project for COP4331 with Dr. Leinecker at the University of Central Florida. We chose this idea to challenge our software development skills. Nonetheless, this was supposed to be a fish app, but a certain guy had to insist...""",
-              textAlign: TextAlign.center,
+              """A project for COP4331 with Dr. Leinecker at the University of Central Florida. We chose this idea to challenge our software development skills. Nonetheless, this was supposed to be a fish app.""",
+              textAlign: TextAlign.justify,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 22,
               ),
             ),
-          ),
-          Divider(
-            color: Colors.black,
           ),
           Container(
             width: w,

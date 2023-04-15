@@ -59,13 +59,13 @@ class NavBar extends StatelessWidget {
                 Get.to(() => Settings(),
                     transition: Transition.rightToLeftWithFade);
               }),
-          ListTile(
+          /*ListTile(
               leading: Icon(Icons.coronavirus_sharp),
               title: Text(
                 "Cursed Mode (Soon)",
                 style: TextStyle(fontSize: 18),
               ),
-              onTap: null),
+              onTap: null),*/
           ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text("Log out", style: TextStyle(fontSize: 18)),
