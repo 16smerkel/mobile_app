@@ -70,6 +70,15 @@ class _ListPageState extends State<ListPage> {
               double remaining = 0;
               remaining = budget - toBeSpent;
 
+              // If over budget
+              Color? color;
+              if (remaining < 0) {
+                color = Colors.red[100];
+              }
+              else{
+                color = Colors.green[100];
+              }
+
               return SingleChildScrollView(
                 child: Column(
                   children: [
@@ -110,7 +119,7 @@ class _ListPageState extends State<ListPage> {
                           EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.green[100]),
+                          color: color),
                       child: Text(
                         "Remaining: \$${remaining.toStringAsFixed(2)}",
                         style: TextStyle(
@@ -210,6 +219,7 @@ class _ListPageState extends State<ListPage> {
                                     TextButton(
                                         onPressed: () {
                                           clearList(_uid);
+                                          Navigator.pop(context);
                                         },
                                         child: Text("Proceed",
                                             style: TextStyle(
@@ -220,6 +230,7 @@ class _ListPageState extends State<ListPage> {
                       child: Container(
                         width: 150,
                         height: 50,
+                        margin: EdgeInsets.all(15),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
                             color: Colors.red[600]),

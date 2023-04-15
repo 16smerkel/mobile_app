@@ -61,13 +61,17 @@ class _HomePageState extends State<HomePage> {
                   var totalAmount = toBeSpent;
                   bool overload = totalAmount > budget;
 
+                  String percentageString;
                   var percentage = totalAmount / budget;
-                  String percentageString =
-                      "${(percentage * 100).toStringAsFixed(2)}%";
 
                   // Change percentage message
                   if (budget > 100000.0) {
                     percentageString = "Ok Bill Gates";
+                  } else if (budget == 0) {
+                    percentageString = "No Budget\n  Selected";
+                  } else {
+                    percentageString =
+                        "${(percentage * 100).toStringAsFixed(2)}%";
                   }
 
                   return (Column(
