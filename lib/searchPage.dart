@@ -116,6 +116,7 @@ class _SearchPageState extends State<SearchPage> {
                                   var store =
                                       snapshot1.data!.keys.elementAt(index);
                                   var products = snapshot1.data![store];
+                                  print(products);
 
                                   // Returns all items for each store
                                   return ListView.builder(

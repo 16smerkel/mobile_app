@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'dart:convert';
 
 class ListPage extends StatefulWidget {
   const ListPage({super.key});
@@ -42,6 +43,7 @@ class _ListPageState extends State<ListPage> {
                       var docs = snapshot.data.docs;
                       final info = docs[0].data()!;
                       var shoppingList = info['list'];
+                      var listLength = shoppingList.length;
                       var budget = info['budget'];
 
                       if (shoppingList.isEmpty) {
@@ -52,12 +54,81 @@ class _ListPageState extends State<ListPage> {
                         ));
                       }
 
-                      for(int i = 0; i < shoppingList.length; i++){
-                        //toBeSpent += 1;
+                      for (int i = 0; i < listLength; i++) {
+                        toBeSpent += 1;
                       }
 
+                      return Column(
+                        children: [
+                          Container(),
+                          Container(
+                            alignment: Alignment.topCenter,
+                            margin: EdgeInsets.only(
+                                bottom: 15, left: 10, right: 15),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 1.0,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: listLength,
+                                itemBuilder: (context, index) {
+                                  var item = jsonDecode(shoppingList[index]);
 
-
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(item['name']),
+                                        subtitle:
+                                            Text(item['price'].toString()),
+                                        leading: GestureDetector(
+                                          child: findLogo(
+                                              item['location'].toString()),
+                                          onTap: () {
+                                            FocusScope.of(context).unfocus();
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    AlertDialog(
+                                                      title: Text(
+                                                          "Store Location:"),
+                                                      content: Text(
+                                                          item['location']
+                                                              .toString()),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  context),
+                                                          child: Text("Ok",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                          .green[
+                                                                      500])),
+                                                        ),
+                                                      ],
+                                                    ));
+                                          },
+                                        ),
+                                        trailing: IconButton(
+                                          icon: Icon(Icons.remove_circle,
+                                              color: Colors.red),
+                                          onPressed: () async {},
+                                        ),
+                                      ),
+                                      Divider(
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                  );
+                                }),
+                          ),
+                        ],
+                      );
                     }
 
                     // Loading data
@@ -66,5 +137,44 @@ class _ListPageState extends State<ListPage> {
         ],
       ),
     );
+  }
+
+  CircleAvatar findLogo(String storeName) {
+    if (storeName.toLowerCase().contains("walmart")) {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: ClipOval(child: Image.asset("img/walmartLogo.png")));
+    }
+
+    if (storeName.toLowerCase().contains("publix")) {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: ClipOval(child: Image.asset("img/publixLogo.png")));
+    }
+
+    if (storeName.toLowerCase().contains("costco")) {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: ClipOval(child: Image.asset("img/costcoLogo.png")));
+    }
+
+    if (storeName.toLowerCase().contains("depot")) {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: ClipOval(
+              child: Image.asset(
+            "img/homeDepotLogo.png",
+          )));
+    }
+
+    if (storeName.toLowerCase().contains("cvs")) {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: ClipOval(child: Image.asset("img/cvsLogo.png")));
+    }
+
+    return CircleAvatar(
+        backgroundColor: Colors.white,
+        child: ClipOval(child: Image.asset("img/unknownLogo.png")));
   }
 }
