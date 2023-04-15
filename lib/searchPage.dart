@@ -18,6 +18,7 @@ class _SearchPageState extends State<SearchPage> {
   final searchApiUrl = Uri.parse(
       "https://us-central1-cop4331c-large-project.cloudfunctions.net/search_product");
   final _searchController = TextEditingController();
+  final _amountController = TextEditingController();
 
   User? user = FirebaseAuth.instance.currentUser;
   late final _uid = user?.uid as String;
@@ -173,7 +174,91 @@ class _SearchPageState extends State<SearchPage> {
                                                 trailing: IconButton(
                                                   icon: Icon(Icons.add,
                                                       color: Colors.green),
-                                                  onPressed: () async {},
+                                                  onPressed: () async {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder:
+                                                            (context) =>
+                                                                AlertDialog(
+                                                                  title: Text(
+                                                                      "Select Amount:"),
+                                                                  content:
+                                                                      TextField(
+                                                                    keyboardType:
+                                                                        TextInputType.numberWithOptions(
+                                                                            decimal:
+                                                                                true),
+                                                                    autofocus:
+                                                                        true,
+                                                                    controller:
+                                                                        _amountController,
+                                                                    decoration:
+                                                                        InputDecoration(
+                                                                            hintText:
+                                                                                "eg: 42",
+                                                                            suffixIcon:
+                                                                                IconButton(
+                                                                              onPressed: () {
+                                                                                _amountController.clear();
+                                                                              },
+                                                                              icon: const Icon(Icons.clear),
+                                                                            )),
+                                                                  ),
+                                                                  actions: [
+                                                                    TextButton(
+                                                                      onPressed:
+                                                                          () =>
+                                                                              Navigator.pop(context),
+                                                                      child: Text(
+                                                                          "Cancel",
+                                                                          style:
+                                                                              TextStyle(color: Colors.red[500])),
+                                                                    ),
+                                                                    TextButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          // Updates user's budget
+                                                                          if (_amountController
+                                                                              .toString()
+                                                                              .isEmpty) {
+                                                                            return;
+                                                                          }
+
+                                                                          var newAmount = double.parse(_amountController
+                                                                              .text
+                                                                              .trim());
+
+                                                                          var price =
+                                                                              double.parse(productPrice);
+
+                                                                          _amountController
+                                                                              .clear();
+                                                                          Navigator.pop(
+                                                                              context);
+
+                                                                          var json =
+                                                                              jsonEncode({
+                                                                            'name':
+                                                                                productName,
+                                                                            'price':
+                                                                                price,
+                                                                            "amount":
+                                                                                newAmount,
+                                                                            'location':
+                                                                                store.toString()
+                                                                          });
+
+                                                                          addToList(
+                                                                              _uid,
+                                                                              json);
+                                                                        },
+                                                                        child: Text(
+                                                                            "SUBMIT",
+                                                                            style:
+                                                                                TextStyle(color: Colors.green[500])))
+                                                                  ],
+                                                                ));
+                                                  },
                                                 ),
                                               ),
                                               Divider(
@@ -239,5 +324,19 @@ class _SearchPageState extends State<SearchPage> {
     return CircleAvatar(
         backgroundColor: Colors.white,
         child: ClipOval(child: Image.asset("img/unknownLogo.png")));
+  }
+
+  void addToList(String uid, String json) async {
+    var collectionReference = await FirebaseFirestore.instance
+        .collection('userInfo')
+        .where('userID', isEqualTo: uid)
+        .get();
+
+    if (collectionReference.docs.isNotEmpty) {
+      var document = collectionReference.docs.single.reference;
+      document.update({
+        'list': FieldValue.arrayUnion([json])
+      });
+    }
   }
 }
