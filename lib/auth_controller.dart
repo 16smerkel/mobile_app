@@ -88,7 +88,7 @@ class AuthController extends GetxController{
       'timeScope': 3600
     };
     
-    collectionReference.add(dataToSave);
+    collectionReference.doc(uid).set(dataToSave);
   }
   
 
