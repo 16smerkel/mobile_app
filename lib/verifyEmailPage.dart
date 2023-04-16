@@ -32,7 +32,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       sendVerificationEmail();
 
       timer = Timer.periodic(
-        Duration(seconds: 3),
+        Duration(seconds: 10),
         (_) => checkEmailVerified(),
       );
     }
@@ -61,16 +61,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       final user = FirebaseAuth.instance.currentUser!;
       await user.sendEmailVerification();
     } catch (e) {
-      Get.snackbar("About User", "User Message",
-          backgroundColor: Colors.redAccent,
-          snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 7),
-          titleText: Text(
-            "Reset password failed",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText:
-              Text(e.toString(), style: TextStyle(color: Colors.white)));
+      print(e);
     }
   }
 
@@ -80,6 +71,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
     if (user != null) {
       await user.reload();
+      Future.delayed(Duration(seconds: 3));
       user = FirebaseAuth.instance.currentUser;
       setState(() {
         isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;

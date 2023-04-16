@@ -84,9 +84,19 @@ class _RegisterPageState extends State<RegisterPage> {
                   obscureText: true,
                   controller: _passwordController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => value != null && value.length < 6
-                      ? "Enter a min. 6 characters"
-                      : null,
+                  validator: (value) {
+                    RegExp regex = RegExp(
+                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~()]).{8,}$');
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter password';
+                    } else if (value.length < 6) {
+                      return "Enter a min. 6 characters";
+                    } else if (!regex.hasMatch(value)) {
+                      return 'Enter valid password';
+                    } else {
+                      return null;
+                    }
+                  },
                   decoration: InputDecoration(
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
                       hintText: "Password",

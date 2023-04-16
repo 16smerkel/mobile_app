@@ -3,7 +3,9 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:non_linear_slider/models/interval.dart';
+import 'package:email_validator/email_validator.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -16,6 +18,7 @@ class _SettingsPageState extends State<SettingsPage> {
   User? user = FirebaseAuth.instance.currentUser;
   late final _uid = user?.uid as String;
   final _timeScopeController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,90 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               title: Text("Change Password"),
               trailing: Icon(Icons.keyboard_arrow_right),
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: Text("Type new password"),
+                          content: TextFormField(
+                            controller: _passwordController,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              RegExp regex = RegExp(
+                                  r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~()]).{8,}$');
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter password';
+                              } else if (value.length < 6) {
+                                return "Enter a min. 6 characters";
+                              } else if (!regex.hasMatch(value)) {
+                                return 'Enter valid password';
+                              } else {
+                                return null;
+                              }
+                            },
+                            decoration: InputDecoration(
+                                hintStyle:
+                                    TextStyle(color: Colors.grey, fontSize: 16),
+                                hintText: "New Password",
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    _passwordController.clear();
+                                  },
+                                  icon: const Icon(Icons.clear),
+                                )),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text("Cancel",
+                                  style: TextStyle(color: Colors.red[500])),
+                            ),
+                            TextButton(
+                                onPressed: () async {
+                                  // Updates user's budget
+                                  if (_passwordController.toString().isEmpty) {
+                                    return;
+                                  }
+
+                                  String password =
+                                      _passwordController.text.trim();
+
+                                  //Pass in the password to updatePassword.
+                                  user?.updatePassword(password).then((_) {
+                                    Get.snackbar(
+                                      "About User",
+                                      "Password Message",
+                                      backgroundColor: Colors.greenAccent,
+                                      snackPosition: SnackPosition.TOP,
+                                      titleText: Text(
+                                        "Password successfully updated!",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    );
+                                  }).catchError((error) {
+                                    print(error);
+                                    Get.snackbar(
+                                      "About User",
+                                      "Password Message",
+                                      backgroundColor: Colors.red,
+                                      snackPosition: SnackPosition.TOP,
+                                      titleText: Text(
+                                        "Could not update password",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    );
+                                    //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+                                  });
+
+                                  _timeScopeController.clear();
+                                  Navigator.pop(context);
+                                },
+                                child: Text("SUBMIT",
+                                    style: TextStyle(color: Colors.green[500])))
+                          ],
+                        ));
+              },
             ),
             _buildDivider(),
             ListTile(
@@ -56,7 +142,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                          title: Text("How long are you willing to travel (in minutes)?"),
+                          title: Text(
+                              "How long are you willing to travel (in minutes)?"),
                           content: TextField(
                             keyboardType:
                                 TextInputType.numberWithOptions(decimal: true),
@@ -86,7 +173,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                   }
 
                                   var newTimeScope = int.parse(
-                                      _timeScopeController.text.trim()) * 60;
+                                          _timeScopeController.text.trim()) *
+                                      60;
 
                                   updateTimeScope(_uid, newTimeScope);
 

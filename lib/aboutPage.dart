@@ -65,8 +65,13 @@ class About extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: profileHeight / 3.3,
-                          //backgroundColor: Colors.green,
-                          child: ClipOval(child: Image.asset("img/Corey.jpeg", fit: BoxFit.cover, width: 90, height: 90,)),
+                          child: ClipOval(
+                              child: Image.asset(
+                            "img/Corey.jpeg",
+                            fit: BoxFit.cover,
+                            width: 90,
+                            height: 90,
+                          )),
                         ),
                         Text(
                           "Corey Katchen",
@@ -158,7 +163,7 @@ class About extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: profileHeight / 3.3,
-                          backgroundColor: Colors.orange,
+                          child: ClipOval(child: Image.asset("img/Rebeca.jpeg", fit: BoxFit.cover, width: 90, height: 90,)),
                         ),
                         Text(
                           "Rebeca Rodriguez",
