@@ -65,7 +65,8 @@ class About extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: profileHeight / 3.3,
-                          backgroundColor: Colors.green,
+                          //backgroundColor: Colors.green,
+                          child: ClipOval(child: Image.asset("img/Corey.jpeg", fit: BoxFit.cover, width: 90, height: 90,)),
                         ),
                         Text(
                           "Corey Katchen",
@@ -73,7 +74,7 @@ class About extends StatelessWidget {
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "Lil' bit of\neverything",
+                          "API\n",
                         )
                       ],
                     ),

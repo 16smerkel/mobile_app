@@ -1,9 +1,9 @@
 import 'package:budgetit_app/loginPage.dart';
-import 'package:budgetit_app/welcomePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:budgetit_app/verifyEmailPage.dart';
 
 
 class AuthController extends GetxController{
@@ -29,8 +29,7 @@ class AuthController extends GetxController{
       Get.offAll(()=>LoginPage(), transition: Transition.cupertinoDialog);
     }
     else{
-      // Registration error occurs here for user.displayName (it has not saved it yet)
-      Get.offAll(()=>WelcomePage(), transition: Transition.cupertinoDialog);
+      Get.offAll(()=>VerifyEmailPage(), transition: Transition.cupertinoDialog);
     }
   }
 
@@ -59,6 +58,7 @@ class AuthController extends GetxController{
       Get.snackbar("About User", "User Message",
       backgroundColor: Colors.redAccent,
       snackPosition: SnackPosition.TOP,
+      duration: Duration(seconds: 7),
         titleText: Text(
           "Account creation failed",
           style: TextStyle(
@@ -98,7 +98,7 @@ class AuthController extends GetxController{
     }
     catch(e){
       Get.snackbar("About Login", "Login Message",
-      duration: Duration(seconds: 5),
+      duration: Duration(seconds: 7),
       backgroundColor: Colors.redAccent,
       snackPosition: SnackPosition.TOP,
         titleText: Text(

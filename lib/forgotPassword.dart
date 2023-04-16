@@ -1,18 +1,20 @@
-import 'package:budgetit_app/registerPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import './auth_controller.dart';
-import 'forgotPassword.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:get/get.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +22,14 @@ class _LoginPageState extends State<LoginPage> {
     double h = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      appBar: AppBar(
+          title: Text("Go back to login"), backgroundColor: Colors.blue[300]),
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: Column(children: [
         Container(
           width: w,
           height: h * 0.3,
-          margin: EdgeInsets.only(top: 10.0),
           decoration: BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.cover,
@@ -49,8 +52,16 @@ class _LoginPageState extends State<LoginPage> {
               borderRadius: BorderRadius.all(Radius.circular(12))),
           child: Column(children: [
             Text(
-              "Login",
+              "Forgot Password?",
               style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Receive an email to reset your password",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20),
+              ),
             ),
             Divider(
               color: Colors.black,
@@ -59,28 +70,17 @@ class _LoginPageState extends State<LoginPage> {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: TextFormField(
                 controller: _emailController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (email) =>
+                    email != null && !EmailValidator.validate(email)
+                        ? "Enter a valid email"
+                        : null,
                 decoration: InputDecoration(
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
                     hintText: "Email",
                     suffixIcon: IconButton(
                       onPressed: () {
                         _emailController.clear();
-                      },
-                      icon: const Icon(Icons.clear),
-                    )),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: TextFormField(
-                obscureText: true,
-                controller: _passwordController,
-                decoration: InputDecoration(
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
-                    hintText: "Password",
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        _passwordController.clear();
                       },
                       icon: const Icon(Icons.clear),
                     )),
@@ -94,44 +94,22 @@ class _LoginPageState extends State<LoginPage> {
                 Expanded(
                   child: Container(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 5.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ForgotPasswordPage()),
-                      );
-                    },
-                    child: Text(
-                      "Forgot your password?",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                )
               ],
-            ),
-            SizedBox(
-              height: 20,
             ),
             GestureDetector(
               onTap: () {
-                AuthController.instance.login(_emailController.text.trim(),
-                    _passwordController.text.trim());
+                resetPassword();
               },
               child: Container(
                 width: w * 0.45,
                 height: h * 0.06,
+                margin: EdgeInsets.all(15),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.blue[300]),
                 child: Center(
                   child: Text(
-                    "Login",
+                    "Reset",
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -141,24 +119,38 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RegisterPage()),
-                );
-              },
-              child: Text(
-                "Register",
-                style: TextStyle(
-                    fontSize: 20,
-                    decoration: TextDecoration.underline,
-                    color: Colors.blue[300]),
-              ),
-            ),
           ]),
         ),
       ]),
     );
+  }
+
+  Future resetPassword() async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: _emailController.text.trim());
+
+      Get.snackbar(
+        "About User",
+        "User Message",
+        backgroundColor: Colors.greenAccent,
+        snackPosition: SnackPosition.TOP,
+        titleText: Text(
+          "Password Reset Email sent!",
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar("About User", "User Message",
+          backgroundColor: Colors.redAccent,
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 7),
+          titleText: Text(
+            "Reset password failed",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText:
+              Text(e.toString(), style: TextStyle(color: Colors.white)));
+    }
   }
 }

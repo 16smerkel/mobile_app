@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
                 }
 
                 if (snapshot.hasData) {
+                  print(user?.emailVerified);
                   var docs = snapshot.data.docs;
                   final info = docs[0].data()!;
                   var budget = info['budget'].toDouble();
