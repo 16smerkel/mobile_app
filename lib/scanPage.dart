@@ -162,6 +162,7 @@ class _ScanPageState extends State<ScanPage> {
       print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
       print('Error: ${response.statusCode}');
       print(responseData1);
+      
 
       Get.snackbar("", "",
           backgroundColor: Colors.redAccent,
