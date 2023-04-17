@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:convert';
@@ -143,6 +144,7 @@ class _ScanPageState extends State<ScanPage> {
 
     //var multiport = http.MultipartFile('image', stream, length);
     var multiport = await http.MultipartFile.fromPath('image', image.path);
+    print(image.path);
 
     var request = http.MultipartRequest('POST', Uri.parse(ocrApiUrl));
     request.fields['client_id'] = 'TEST'; // Use 'TEST' for testing purpose
@@ -162,6 +164,19 @@ class _ScanPageState extends State<ScanPage> {
       print("FFFFFFFFFFFFFFFFFFFFFFFFFFFF");
       print('Error: ${response.statusCode}');
       print(responseData);
+      //var json = jsonDecode(responseData);
+      //scanReceipt(json);
+
+      Get.snackbar("", "",
+          backgroundColor: Colors.redAccent,
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 7),
+          titleText: Text(
+            "Image Scan Failed",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text("Receipt not recognized",
+              style: TextStyle(color: Colors.white)));
     }
   }
 
