@@ -137,14 +137,7 @@ class _ScanPageState extends State<ScanPage> {
 
   // define function to upload receipt to OCR API and get response
   Future<void> uploadReceipt(File image) async {
-    var stream = http.ByteStream(image.openRead());
-    stream.cast();
-
-    var length = await image.length();
-
-    //var multiport = http.MultipartFile('image', stream, length);
-    var multiport = await http.MultipartFile.fromPath('image', image.path);
-    print(image.path);
+    var multiport = await http.MultipartFile.fromPath('file', image.path);
 
     var request = http.MultipartRequest('POST', Uri.parse(ocrApiUrl));
     request.fields['client_id'] = 'TEST'; // Use 'TEST' for testing purpose
@@ -156,26 +149,29 @@ class _ScanPageState extends State<ScanPage> {
 
     var response = await request.send();
     if (response.statusCode == 200) {
-      String responseData = await response.stream.bytesToString();
-      print("GGGGGGGGGGGGGGGGGGGGGGG");
-      print(responseData);
-    } else {
-      String responseData = await response.stream.bytesToString();
-      print("FFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+      String responseData1 = await response.stream.bytesToString();
+      print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
       print('Error: ${response.statusCode}');
-      print(responseData);
-      //var json = jsonDecode(responseData);
-      //scanReceipt(json);
+      print(responseData1);
+
+      var responseData = await http.Response.fromStream(response);
+      var responseJson = json.decode(responseData.body)['receipts'][0];
+      scanReceipt(responseJson);
+    } else {
+      String responseData1 = await response.stream.bytesToString();
+      print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+      print('Error: ${response.statusCode}');
+      print(responseData1);
 
       Get.snackbar("", "",
           backgroundColor: Colors.redAccent,
           snackPosition: SnackPosition.TOP,
           duration: Duration(seconds: 7),
           titleText: Text(
-            "Image Scan Failed",
+            "Receipt Scan Failed",
             style: TextStyle(color: Colors.white),
           ),
-          messageText: Text("Receipt not recognized",
+          messageText: Text("There was an error scanning the image",
               style: TextStyle(color: Colors.white)));
     }
   }
@@ -184,5 +180,29 @@ class _ScanPageState extends State<ScanPage> {
   Future<void> scanReceipt(Map<String, dynamic> json) async {
     var scanResponse = await http.post(scanApiUrl, body: jsonEncode(json));
     print(scanResponse.body);
+
+    if (scanResponse.statusCode == 200) {
+      Get.snackbar("", "",
+          backgroundColor: Colors.greenAccent,
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 7),
+          titleText: Text(
+            "Receipt Scan Successful",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text("Data has been sent to database!",
+              style: TextStyle(color: Colors.white)));
+    } else {
+      Get.snackbar("", "",
+          backgroundColor: Colors.redAccent,
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 7),
+          titleText: Text(
+            "Receipt Scan Failed",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text("There was an error sending data",
+              style: TextStyle(color: Colors.white)));
+    }
   }
 }
