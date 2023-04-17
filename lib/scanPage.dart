@@ -19,8 +19,9 @@ class _ScanPageState extends State<ScanPage> {
   final ocrApiUrl = "https://ocr.asprise.com/api/v1/receipt";
   final scanApiUrl = Uri.parse(
       "https://us-central1-cop4331c-large-project.cloudfunctions.net/scan_receipt");
-  XFile? image;
+  File? image;
   final ImagePicker picker = ImagePicker();
+  late String message;
 
   @override
   Widget build(BuildContext context) {
@@ -45,18 +46,22 @@ class _ScanPageState extends State<ScanPage> {
             //if image not null show the image
             //if image null show text
             image != null
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.file(
-                        //to show image, you type like this.
-                        File(image!.path),
-                        fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.width,
-                        height: 300,
+                ? Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.file(
+                            //to show image, you type like this.
+                            File(image!.path),
+                            fit: BoxFit.cover,
+                            width: MediaQuery.of(context).size.width,
+                            height: 300,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   )
                 : Text(
                     "No Image",
@@ -72,9 +77,15 @@ class _ScanPageState extends State<ScanPage> {
   Future getImage(ImageSource media) async {
     var img = await picker.pickImage(source: media);
 
-    setState(() {
-      image = img;
-    });
+    if (img != null) {
+      setState(() {
+        image = File(img.path);
+
+        if (image != null) {
+          uploadReceipt(image!);
+        }
+      });
+    }
   }
 
   //show popup dialog
@@ -95,21 +106,6 @@ class _ScanPageState extends State<ScanPage> {
                     onPressed: () async {
                       Navigator.pop(context);
                       getImage(ImageSource.gallery);
-
-                      /*
-
-                      // call uploadReceipt function to get the receipt JSON
-                      var receiptJson = await uploadReceipt();
-
-                      // call scanReceipt function with each example JSON
-                      var examples = [
-                        'new receipt.json',
-                      ];
-                      for (var example in examples) {
-                        var exampleJson = json.decode(
-                            await rootBundle.loadString('assets/$example'));
-                        await scanReceipt(exampleJson);
-                      }*/
                     },
                     child: Row(
                       children: const [
@@ -139,16 +135,34 @@ class _ScanPageState extends State<ScanPage> {
   }
 
   // define function to upload receipt to OCR API and get response
-  Future<Map<String, dynamic>> uploadReceipt() async {
-    var request = http.MultipartRequest('POST', Uri.parse(ocrApiUrl))
-      ..fields['client_id'] = 'TEST'
-      ..fields['recognizer'] = 'auto'
-      ..fields['ref_no'] = 'ocr_flutter_123'
-      ..files.add(await http.MultipartFile.fromPath('file', 'new receipt.JPG'));
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    var responseJson = json.decode(response.body)['receipts'][0];
-    return responseJson;
+  Future<void> uploadReceipt(File image) async {
+    var stream = http.ByteStream(image.openRead());
+    stream.cast();
+
+    var length = await image.length();
+
+    //var multiport = http.MultipartFile('image', stream, length);
+    var multiport = await http.MultipartFile.fromPath('image', image.path);
+
+    var request = http.MultipartRequest('POST', Uri.parse(ocrApiUrl));
+    request.fields['client_id'] = 'TEST'; // Use 'TEST' for testing purpose
+    request.fields['recognizer'] =
+        'auto'; // can be 'US', 'CA', 'JP', 'SG' or 'auto'
+    request.fields['ref_no'] =
+        'ocr_flutter_123'; // optional caller provided ref code
+    request.files.add(multiport);
+
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      String responseData = await response.stream.bytesToString();
+      print("GGGGGGGGGGGGGGGGGGGGGGG");
+      print(responseData);
+    } else {
+      String responseData = await response.stream.bytesToString();
+      print("FFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+      print('Error: ${response.statusCode}');
+      print(responseData);
+    }
   }
 
   // define function to scan receipt from provided JSON
