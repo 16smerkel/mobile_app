@@ -153,7 +153,13 @@ class About extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: profileHeight / 3.3,
-                          backgroundColor: Colors.yellow,
+                          child: ClipOval(
+                              child: Image.asset(
+                            "img/Owen.png",
+                            fit: BoxFit.cover,
+                            width: 90,
+                            height: 90,
+                          )),
                         ),
                         Text(
                           "Owen Burns",
@@ -250,7 +256,7 @@ class About extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(15))),
             child: Text(
-              """A project for COP4331 with Dr. Leinecker at the University of Central Florida. We chose this idea to challenge our software development skills. Nonetheless, this was supposed to be a fish app.""",
+              """A project for COP4331 during Spring 2023 with Dr. Leinecker at the University of Central Florida. We chose this idea to challenge our software development skills. Nonetheless, this was supposed to be a fish app.""",
               textAlign: TextAlign.justify,
               style: TextStyle(
                 color: Colors.black,
