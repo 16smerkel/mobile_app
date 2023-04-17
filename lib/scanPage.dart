@@ -155,6 +155,21 @@ class _ScanPageState extends State<ScanPage> {
       var responseJson = json.decode(responseData.body)['receipts'][0];
       print(responseJson);
       scanReceipt(responseJson);
+    } else if (response.statusCode == 429) {
+      String responseData1 = await response.stream.bytesToString();
+      print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+      print('Error: ${response.statusCode}');
+      print(responseData1);
+      Get.snackbar("", "",
+          backgroundColor: Colors.yellow[200],
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 15),
+          titleText: Text(
+            "Receipt Scan Successful",
+            style: TextStyle(color: Colors.black),
+          ),
+          messageText: Text("Daily quota has already been reached.",
+              style: TextStyle(color: Colors.black)));
     } else {
       String responseData1 = await response.stream.bytesToString();
       print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
@@ -164,7 +179,7 @@ class _ScanPageState extends State<ScanPage> {
       Get.snackbar("", "",
           backgroundColor: Colors.redAccent,
           snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 7),
+          duration: Duration(seconds: 15),
           titleText: Text(
             "Receipt Scan Failed",
             style: TextStyle(color: Colors.white),
@@ -184,7 +199,7 @@ class _ScanPageState extends State<ScanPage> {
       Get.snackbar("", "",
           backgroundColor: Colors.greenAccent,
           snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 7),
+          duration: Duration(seconds: 15),
           titleText: Text(
             "Receipt Scan Successful",
             style: TextStyle(color: Colors.white),
@@ -196,7 +211,7 @@ class _ScanPageState extends State<ScanPage> {
       Get.snackbar("", "",
           backgroundColor: Colors.redAccent,
           snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 7),
+          duration: Duration(seconds: 15),
           titleText: Text(
             "Receipt Scan Failed",
             style: TextStyle(color: Colors.white),
