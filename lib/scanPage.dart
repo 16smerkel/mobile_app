@@ -150,6 +150,16 @@ class _ScanPageState extends State<ScanPage> {
     var response = await request.send();
     if (response.statusCode == 200) {
       print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+      Get.snackbar("", "",
+          backgroundColor: Colors.greenAccent,
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 15),
+          titleText: Text(
+            "Receipt Scan Successful",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text("Data has been sent to database!",
+              style: TextStyle(color: Colors.white)));
 
       var responseData = await http.Response.fromStream(response);
       var responseJson = json.decode(responseData.body)['receipts'][0];
@@ -196,28 +206,8 @@ class _ScanPageState extends State<ScanPage> {
 
     if (scanResponse.statusCode == 200) {
       print("Yay!!!!");
-      Get.snackbar("", "",
-          backgroundColor: Colors.greenAccent,
-          snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 15),
-          titleText: Text(
-            "Receipt Scan Successful",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text("Data has been sent to database!",
-              style: TextStyle(color: Colors.white)));
     } else {
       print("Booooooooooooooo");
-      Get.snackbar("", "",
-          backgroundColor: Colors.redAccent,
-          snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 15),
-          titleText: Text(
-            "Receipt Scan Failed",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text("There was an error sending data",
-              style: TextStyle(color: Colors.white)));
     }
   }
 }
