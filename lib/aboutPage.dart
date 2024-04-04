@@ -6,7 +6,7 @@ class About extends StatelessWidget {
 
   const About({super.key});
 
-  @override
+  @override /*js*/
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
